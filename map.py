@@ -31,10 +31,8 @@ if departing_airport_readable and arriving_airport_readable:
     arriving_iata = arriving_airport_readable[-4:-1]
     flight_df = all_airports_df.query(f"IATA in ['{departing_iata}', '{arriving_iata}']")
     # TODO: Make this better by including going backward in other direction
-    left_most = flight_df['LONGITUDE'].min()
-    right_most = flight_df['LONGITUDE'].max()
-    upper = flight_df['LATITUDE'].max()
-    lower = flight_df['LATITUDE'].min()
+    left_most,right_most = flight_df['LONGITUDE'].min(), flight_df['LONGITUDE'].max()
+    upper,lower = flight_df['LATITUDE'].max(),  flight_df['LATITUDE'].min()
     all_airports_df["color"] = all_airports_df['IATA'].apply(
         lambda row: "#000218" if row in [departing_iata, arriving_iata] else "#a9b2ff")
     st.map(all_airports_df.query(
