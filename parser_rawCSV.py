@@ -1,5 +1,7 @@
 import csv
 #https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat
+#This entire code is made by chatGPT, I do not consider this to be part of project, it is just to parse
+#Gigantic data of airport list
 
 def load_airports(file_path):
     airports = []
