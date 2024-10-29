@@ -1,4 +1,5 @@
 import csv
+#https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat
 
 def load_airports(file_path):
     airports = []
@@ -21,7 +22,7 @@ def save_airports_to_csv(airports, file_path):
     with open(file_path, mode='w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         # Writing the header
-        writer.writerow(["IATA", "Name", "Latitude", "Longitude", "Country", "City"])
+        writer.writerow(["IATA", "Name", "LATITUDE", "LONGITUDE", "Country", "City"])
         # Writing airport data
         writer.writerows(airports)
 
