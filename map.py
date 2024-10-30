@@ -57,4 +57,4 @@ elif departing_airport_readable and arriving_airport_readable:
 else:
     st.map(all_airports_df)
 
-# TODO: Implement API
+# TODO: Implement API, Eliminate the nodes without direct flights
