@@ -1,12 +1,15 @@
 from dataclasses import dataclass
-from typing import Set, List, Optional
-
+from typing import Set, List, Optional, Dict
+import heapq
 
 @dataclass
 class FlightData:
     """Data related to a flight that is used for weighting"""
 
     price: float
+
+    def weight(self) -> float:
+        return self.price
 
 
 @dataclass
@@ -60,3 +63,28 @@ class FlightGraph:
                     # fmt: on
 
         return out
+
+    def find_route(self, start: str, end: str):
+        if (start in self.airports) and (end in self.airports):
+            visited = []
+            airports_to_visit = heapq.heapify([start])
+
+            flight_path = []
+
+            weights_to_dest: Dict[str, Optional[float]] = {a: None for a in self.airports}
+            weights_to_dest[start] = 0
+
+            weights_and_distance_to_dest: Dict[str, Optional[float]] = {a: None for a in self.airports}
+            weights_and_distance_to_dest[start] =
+
+            while airports_to_visit:
+                current = heapq.heappop(airports_to_visit)
+
+                row = self.airports.index(current)
+                if current == end:
+                    return flight_path
+
+                for flight in self.flight_matrix[row]:
+
+        else:
+            return None
