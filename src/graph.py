@@ -1,6 +1,9 @@
-from dataclasses import dataclass
-from typing import Set, List, Optional, Dict
 import heapq
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Set, Tuple
+
+from airport_locations import airport_distance
+
 
 @dataclass
 class FlightData:
@@ -9,7 +12,7 @@ class FlightData:
     price: float
 
     def weight(self) -> float:
-        return self.price
+        return self.price * 4
 
 
 @dataclass
@@ -64,27 +67,57 @@ class FlightGraph:
 
         return out
 
-    def find_route(self, start: str, end: str):
+    def find_route(self, start: str, end: str) -> Optional[List[str]]:
         if (start in self.airports) and (end in self.airports):
-            visited = []
-            airports_to_visit = heapq.heapify([start])
+            airports_to_visit = [start]
 
-            flight_path = []
+            via_list: Dict[str, str] = {a: "" for a in self.airports}
 
-            weights_to_dest: Dict[str, Optional[float]] = {a: None for a in self.airports}
-            weights_to_dest[start] = 0
+            cumulative_weights: Dict[str, float] = {
+                a: float("inf") for a in self.airports
+            }
+            cumulative_weights[start] = 0
 
-            weights_and_distance_to_dest: Dict[str, Optional[float]] = {a: None for a in self.airports}
-            weights_and_distance_to_dest[start] =
+            cumulative_weights_and_distances: Dict[str, float] = {
+                a: float("inf") for a in self.airports
+            }
+            cumulative_weights_and_distances[start] = 0
 
             while airports_to_visit:
                 current = heapq.heappop(airports_to_visit)
 
                 row = self.airports.index(current)
-                if current == end:
-                    return flight_path
 
-                for flight in self.flight_matrix[row]:
+                if current == end:
+                    flight_plan = []
+
+                    while current is not start:
+                        origin = via_list[current]
+                        row = self.airports.index(origin)
+                        col = self.airports.index(current)
+                        flight_plan.insert(
+                            0,
+                            Flight(origin, current, self.flight_matrix[row][col]),
+                        )
+                        current = origin
+
+                    return flight_plan
+
+                dest_and_weights: List[Tuple[int, FlightData]] = [
+                    (self.airports[i], data)
+                    for i, data in enumerate(self.flight_matrix[row])
+                    if data
+                ]
+
+                for dest, weight in dest_and_weights:
+                    new_cumulative_weight = (cumulative_weights[current] or 0) + weight
+                    if new_cumulative_weight < cumulative_weights[dest]:
+                        via_list[dest] = current
+                        cumulative_weights[dest] = new_cumulative_weight
+                        cumulative_weights_and_distances[dest] = (
+                            new_cumulative_weight + airport_distance(current, dest)
+                        )
+                        heapq.heappush(airports_to_visit, dest)
 
         else:
             return None

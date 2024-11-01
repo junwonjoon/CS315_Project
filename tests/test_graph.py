@@ -1,6 +1,8 @@
-from graph import FlightGraph, Flight
+from typing import List
+
 import pytest
-from typing import List, Set
+
+from graph import Flight, FlightGraph
 
 
 @pytest.fixture
@@ -23,6 +25,7 @@ def single_flight_string() -> str:
     )
     # fmt: on
 
+
 @pytest.fixture
 def example_flights():
     return [
@@ -30,8 +33,21 @@ def example_flights():
         Flight("JFK", "MDW", (12.99)),
         Flight("LAS", "MDW", (15.99)),
         Flight("PHX", "JFK", (17.99)),
-        Flight("PHX", "MDW", (13.99))
+        Flight("PHX", "MDW", (13.99)),
+        Flight("MDW", "LHR", (113.99)),
+        Flight("JFK", "LHR", (50.99)),
     ]
+
+
+@pytest.fixture
+def example_flight_airport_locations(example_flights):
+    return {
+        "JFK": (40.63980103, -73.77890015),
+        "LAS": (36.08010101, -115.1520004),
+        "MDW": (41.785999, -87.752403),
+        "PHX": (33.43429946899414, -112.01200103759766),
+    }
+
 
 def generate_airports_from_flights(flights: List[Flight]) -> List[str]:
     airport_set = set()
@@ -44,7 +60,6 @@ def generate_airports_from_flights(flights: List[Flight]) -> List[str]:
     airports.sort()
 
     return airports
-
 
 
 def generate_flightgraph_string(flights: List[Flight], airports: List[str]) -> str:
@@ -68,7 +83,12 @@ def generate_flightgraph_string(flights: List[Flight], airports: List[str]) -> s
 
 def test_helper_fn(single_flight, single_flight_string):
     """Verify that generate_string_from_flights behaves correctly"""
-    assert generate_flightgraph_string([single_flight], generate_airports_from_flights([single_flight])) == single_flight_string
+    assert (
+        generate_flightgraph_string(
+            [single_flight], generate_airports_from_flights([single_flight])
+        )
+        == single_flight_string
+    )
 
 
 def test_update_1_flight(single_flight, single_flight_string):
@@ -86,8 +106,19 @@ def test_update_flight(example_flights):
     for f in example_flights:
         flight_lst.update_flight(f)
 
-    print(flight_lst.airports)
     assert str(flight_lst) == generate_flightgraph_string(example_flights, airports)
+
+
+def test_find_route(example_flights):
+    airports = generate_airports_from_flights(example_flights)
+
+    flight_lst = FlightGraph(set(airports))
+    for f in example_flights:
+        flight_lst.update_flight(f)
+
+    plan = flight_lst.find_route("PHX", "LHR")
+
+    assert plan == [example_flights[3], example_flights[6]]
 
 
 def test_init():
