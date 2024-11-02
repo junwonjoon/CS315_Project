@@ -29,24 +29,17 @@ def single_flight_string() -> str:
 @pytest.fixture
 def example_flights():
     return [
-        Flight("PHX", "LAS", (5.99)),
-        Flight("JFK", "MDW", (12.99)),
-        Flight("LAS", "MDW", (15.99)),
-        Flight("PHX", "JFK", (17.99)),
-        Flight("PHX", "MDW", (13.99)),
-        Flight("MDW", "LHR", (113.99)),
-        Flight("JFK", "LHR", (50.99)),
+        Flight("PHX", "LAS", (40)),
+        Flight("PHX", "LAX", (35)),
+        Flight("LAX", "LHR", (200)),
+        Flight("LAX", "LAS", (37)),
+        Flight("JFK", "MDW", (60)),
+        Flight("LAS", "MDW", (55)),
+        Flight("PHX", "JFK", (80)),
+        Flight("PHX", "MDW", (65)),
+        Flight("MDW", "LHR", (120)),
+        Flight("JFK", "LHR", (100)),
     ]
-
-
-@pytest.fixture
-def example_flight_airport_locations(example_flights):
-    return {
-        "JFK": (40.63980103, -73.77890015),
-        "LAS": (36.08010101, -115.1520004),
-        "MDW": (41.785999, -87.752403),
-        "PHX": (33.43429946899414, -112.01200103759766),
-    }
 
 
 def generate_airports_from_flights(flights: List[Flight]) -> List[str]:
@@ -118,7 +111,7 @@ def test_find_route(example_flights):
 
     plan = flight_lst.find_route("PHX", "LHR")
 
-    assert plan == [example_flights[3], example_flights[6]]
+    assert plan == [example_flights[6], example_flights[9]]
 
 
 def test_init():
