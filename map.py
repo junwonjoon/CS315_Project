@@ -71,10 +71,11 @@ elif departing_airport_readable and arriving_airport_readable:
     edges_df = pd.DataFrame(edges)
     st.subheader("Showing a table of all of possibilities")
     st.write(edges_df)
-    # Get valid edges and graph representation for the possible paths max 200 Nodes; max 400 edges.
-    # Sometimes it doesn't get displayed
-    st.subheader("Displaying a graph of all of possibilities")
-    st.graphviz_chart(graph)
+    if edges_df[edges_df.columns[0]].count() <= 400 and edges_df[edges_df.columns[0]].nunique() <= 200:
+        # Get valid edges and graph representation for the possible paths max 200 Nodes; max 400 edges.
+        # Sometimes it doesn't get displayed
+        st.subheader("Displaying a graph of all of possibilities")
+        st.graphviz_chart(graph)
 
     # Below is from chatGPT, I was trying to visualize the graph in different way.
     # if st.button("Generate"):
