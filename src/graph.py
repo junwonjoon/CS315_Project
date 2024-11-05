@@ -6,22 +6,12 @@ from airport_locations import airport_distance
 
 
 @dataclass
-class FlightData:
-    """Data related to a flight that is used for weighting"""
-
-    price: float
-
-    def weight(self) -> float:
-        return self.price * 4
-
-
-@dataclass
 class Flight:
     """A flight from one airport to another"""
 
     source: str
     dest: str
-    data: FlightData
+    price: float
 
     def __str__(self) -> str:
         """Get string representation of a flight"""
@@ -32,7 +22,7 @@ class FlightGraph:
     """Graph containing flights between airports"""
 
     airports: List[str]
-    flight_matrix: List[List[Optional[FlightData]]]
+    flight_matrix: List[List[Optional[float]]]
 
     def __init__(self, airports: Set[str]) -> None:
         """Initialize a graph using a set of airports"""
@@ -48,7 +38,7 @@ class FlightGraph:
         row = self.airports.index(flight.source)
         col = self.airports.index(flight.dest)
 
-        self.flight_matrix[row][col] = flight.data
+        self.flight_matrix[row][col] = flight.price
 
     def __str__(self) -> str:
         """Get string representation of stored flights"""
@@ -58,12 +48,9 @@ class FlightGraph:
             out += f"\nFlights from {airport}:\n"
             for j, flight_data in enumerate(self.flight_matrix[idx]):
                 if flight_data is not None:
-                    # fmt: off
                     out += (
-                            f"Origin: {airport}; "
-                            f"Destination: {self.airports[j]}\n"
+                        f"Origin: {airport}; Destination: {self.airports[j]}\n"
                     )
-                    # fmt: on
 
         return out
 
@@ -97,25 +84,32 @@ class FlightGraph:
                         col = self.airports.index(current)
                         flight_plan.insert(
                             0,
-                            Flight(origin, current, self.flight_matrix[row][col]),
+                            Flight(
+                                origin,
+                                current,
+                                self.flight_matrix[row][col],
+                            ),
                         )
                         current = origin
 
                     return flight_plan
 
-                dest_and_weights: List[Tuple[int, FlightData]] = [
+                dest_and_weights: List[Tuple[int, float]] = [
                     (self.airports[i], data)
                     for i, data in enumerate(self.flight_matrix[row])
                     if data
                 ]
 
                 for dest, weight in dest_and_weights:
-                    new_cumulative_weight = (cumulative_weights[current] or 0) + weight
+                    new_cumulative_weight = (
+                        cumulative_weights[current] or 0
+                    ) + weight
                     if new_cumulative_weight < cumulative_weights[dest]:
                         via_list[dest] = current
                         cumulative_weights[dest] = new_cumulative_weight
                         cumulative_weights_and_distances[dest] = (
-                            new_cumulative_weight + airport_distance(current, dest)
+                            new_cumulative_weight
+                            + airport_distance(current, dest)
                         )
                         heapq.heappush(airports_to_visit, dest)
 

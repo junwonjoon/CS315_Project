@@ -55,7 +55,10 @@ def generate_airports_from_flights(flights: List[Flight]) -> List[str]:
     return airports
 
 
-def generate_flightgraph_string(flights: List[Flight], airports: List[str]) -> str:
+def generate_flightgraph_string(
+    flights: List[Flight],
+    airports: List[str],
+) -> str:
     """Generate the FlightGraph string from a list of flights"""
     out = ""
 
@@ -78,7 +81,8 @@ def test_helper_fn(single_flight, single_flight_string):
     """Verify that generate_string_from_flights behaves correctly"""
     assert (
         generate_flightgraph_string(
-            [single_flight], generate_airports_from_flights([single_flight])
+            [single_flight],
+            generate_airports_from_flights([single_flight]),
         )
         == single_flight_string
     )
@@ -99,7 +103,10 @@ def test_update_flight(example_flights):
     for f in example_flights:
         flight_lst.update_flight(f)
 
-    assert str(flight_lst) == generate_flightgraph_string(example_flights, airports)
+    assert str(flight_lst) == generate_flightgraph_string(
+        example_flights,
+        airports,
+    )
 
 
 def test_find_route(example_flights):
