@@ -64,7 +64,6 @@ elif departing_airport_readable and arriving_airport_readable:
     st.map(popular_100_airport_filtered_df, color="color")
     st.write(
         f"The flight from {departing_airport_readable} to {arriving_airport_readable} is heading {results[3]} bound.")
-    st.write(popular_100_airport_filtered_df)
     edges_raw = get_valid_heading(departing_iata, arriving_iata, popular_100_airport_filtered_df)
     edges = edges_raw[0]
     graph = edges_raw[1]
@@ -76,28 +75,28 @@ elif departing_airport_readable and arriving_airport_readable:
         # Sometimes it doesn't get displayed
         st.subheader("Displaying a graph of all of possibilities")
         st.graphviz_chart(graph)
+    else:
+    #Below is from chatGPT, I was trying to visualize the graph in different way.
+        G = nx.DiGraph()
 
-    # Below is from chatGPT, I was trying to visualize the graph in different way.
-    # if st.button("Generate"):
-    #     G = nx.DiGraph()
-    #
-    #     # Add edges with weights
-    #     for departing_city, arriving_city, price in edges:
-    #         G.add_edge(departing_city, arriving_city, weight=price)
-    #
-    #     # Get edge weights for display
-    #     edge_labels = {(u, v): f'${d["weight"]}' for u, v, d in G.edges(data=True)}
-    #
-    #     # Adjust layout to space nodes
-    #     pos = nx.spring_layout(G, k=2, seed=42)  # Increase `k` to spread nodes out
-    #
-    #     plt.figure(figsize=(12, 10))
-    #     nx.draw(G, pos, with_labels=True, node_size=2000, node_color='orange', font_size=10, font_weight='bold',
-    #             edge_color='black', arrowsize=20)
-    #     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_color='black')
-    #
-    #     plt.title('City Connections with Prices (Spaced Out)')
-    #     plt.savefig('graph_output.png')
+        # Add edges with weights
+        for departing_city, arriving_city, price in edges:
+            G.add_edge(departing_city, arriving_city, weight=price)
+
+        # Get edge weights for display
+        edge_labels = {(u, v): f'${d["weight"]}' for u, v, d in G.edges(data=True)}
+
+        # Adjust layout to space nodes
+        pos = nx.spring_layout(G, k=5, seed=42)  # Increase `k` to spread nodes out
+
+        plt.figure(figsize=(24, 20))
+        nx.draw(G, pos, with_labels=True, node_size=2000, node_color='orange', font_size=10, font_weight='bold',
+                edge_color='black', arrowsize=20)
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_color='black')
+
+        plt.title('City Connections with Prices (Spaced Out)')
+        plt.savefig('graph_output.png')
+        st.image('graph_output.png')
 else:
     st.map(all_airports_df)
 
