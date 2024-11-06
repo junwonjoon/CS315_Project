@@ -78,7 +78,6 @@ elif departing_airport_readable and arriving_airport_readable:
     else:
     #Below is from chatGPT, I was trying to visualize the graph in different way.
         G = nx.DiGraph()
-
         # Add edges with weights
         for departing_city, arriving_city, price in edges:
             G.add_edge(departing_city, arriving_city, weight=price)
