@@ -57,7 +57,7 @@ class FlightGraph:
 
     def find_route(self, start: str, end: str) -> Optional[List[str]]:
         if (start in self.airports) and (end in self.airports):
-            airports_to_visit = [start]
+            airports_to_visit = [(0, start)]
 
             via_list: Dict[str, str] = {a: "" for a in self.airports}
 
@@ -72,7 +72,7 @@ class FlightGraph:
             cumulative_weights_and_distances[start] = 0
 
             while airports_to_visit:
-                current = heapq.heappop(airports_to_visit)
+                _, current = heapq.heappop(airports_to_visit)
 
                 row = self.airports.index(current)
 
@@ -112,7 +112,10 @@ class FlightGraph:
                             new_cumulative_weight
                             + airport_distance(current, dest)
                         )
-                        heapq.heappush(airports_to_visit, dest)
+                        heapq.heappush(
+                            airports_to_visit,
+                            (cumulative_weights_and_distances[dest], dest),
+                        )
 
         else:
             return None
