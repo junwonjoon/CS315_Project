@@ -27,6 +27,7 @@ class FlightGraph:
     def __init__(self, airports: Set[str]) -> None:
         """Initialize a graph using a set of airports"""
         self.airports = list(airports)
+
         # Sort to ensure consistent ordering of airports - important for
         # test cases
         self.airports.sort()
