@@ -4,6 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+
+    <list default="true" id="340da857-24b4-4cc6-b0fc-1bf1003a628a" name="Changes" comment="" />
     <list default="true" id="9f2966d7-c27d-4341-83cc-f771798ee78e" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/variables.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
@@ -24,6 +26,10 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2oAtJLkJMQan88budiO0M5lkCRn" />
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="2o5gaixxAzGb8PTyJLhisJhx0AU" />
@@ -31,6 +37,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;API&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Python.map.executor": "Run",
@@ -62,6 +80,17 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
+      <changelist id="340da857-24b4-4cc6-b0fc-1bf1003a628a" name="Changes" comment="" />
+      <created>1730324136405</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1730324136405</updated>
+      <workItem from="1730324137857" duration="259000" />
+      <workItem from="1730412391191" duration="1959000" />
+      <workItem from="1730846888729" duration="72000" />
+      <workItem from="1730846970968" duration="219000" />
+      <workItem from="1730847483426" duration="903000" />
+      <workItem from="1730927042986" duration="28000" />
       <changelist id="9f2966d7-c27d-4341-83cc-f771798ee78e" name="Changes" comment="" />
       <created>1730164916835</created>
       <option name="number" value="Default" />
@@ -72,8 +101,7 @@
       <workItem from="1730166595427" duration="4982000" />
       <workItem from="1730218196557" duration="279000" />
       <workItem from="1730223169506" duration="3640000" />
-      <workItem from="1730241295419" duration="14699000" />
-    </task>
+      <workItem from="1730241295419" duration="14699000" />    </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
