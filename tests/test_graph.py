@@ -14,7 +14,6 @@ def single_flight() -> Flight:
 @pytest.fixture
 def single_flight_string() -> str:
     """Return FlightGraph String from single_flight fixture in Graph"""
-    # fmt: off
     return (
         "Airports: LAS, PHX\n"
         "\n"
@@ -23,7 +22,6 @@ def single_flight_string() -> str:
         "Flights from PHX:\n"
         "Origin: PHX; Destination: LAS\n"
     )
-    # fmt: on
 
 
 @pytest.fixture

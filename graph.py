@@ -80,6 +80,7 @@ class FlightGraph:
                     flight_plan = []
 
                     while current is not start:
+                        # Build list of flights to get to the destination
                         origin = via_list[current]
                         row = self.airports.index(origin)
                         col = self.airports.index(current)
@@ -103,8 +104,8 @@ class FlightGraph:
 
                 for dest, weight in dest_and_weights:
                     new_cumulative_weight = (
-                        cumulative_weights[current] or 0
-                    ) + weight
+                        (cumulative_weights[current]) + weight
+                    )
                     if new_cumulative_weight < cumulative_weights[dest]:
                         via_list[dest] = current
                         cumulative_weights[dest] = new_cumulative_weight
@@ -112,10 +113,12 @@ class FlightGraph:
                             new_cumulative_weight
                             + airport_distance(current, dest)
                         )
-                        heapq.heappush(
-                            airports_to_visit,
-                            (cumulative_weights_and_distances[dest], dest),
-                        )
+                        if not any(
+                            [d == dest for (_, d) in airports_to_visit]
+                        ):
+                            heapq.heappush(
+                                airports_to_visit,
+                                (cumulative_weights_and_distances[dest], dest),
+                            )
 
-        else:
-            return None
+        return None
