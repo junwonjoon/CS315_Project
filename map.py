@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-from variables import read_airports_csv,
+from variables import *
 from funclib import *
 import networkx as nx
 import matplotlib.pyplot as plt
