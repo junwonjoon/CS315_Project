@@ -19,13 +19,6 @@ def read_airports_csv(file_path: str) -> pd.DataFrame or None:
         pd.DataFrame or None: The DataFrame containing the data if read successfully,
                               or None if an error occurs.
     """
-
-from typing import Any
-import pandas as pd
-import requests
-
-
-def read_airports_csv(file_path: str) -> pd.DataFrame:
     try:
         # Load the CSV file into a DataFrame
         df = pd.read_csv(file_path)
@@ -84,7 +77,6 @@ def is_in_circle(query_x: float, query_y: float, origin_x: float, origin_y: floa
     Returns:
         bool: True if the query point is within the radius, False otherwise.
     """
-=======
 def find_distance_and_midpoint(x1: float, y1: float, x2: float, y2: float) -> tuple[float | Any, float, float]:
     distance_x = max(x1, x2) - min(x1, x2)
     midpoint_x = (min(x1, x2) + distance_x / 2)
