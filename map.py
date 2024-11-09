@@ -12,7 +12,7 @@ import graphviz
 # Path to the sample CSV file
 file_path = "processed_airports.csv"
 # Read the CSV and convert it to a pandas DataFrame
-st.title("Path Finder")
+st.title("Cheapest Flight Finder")
 all_airports_df = read_airports_csv(file_path)
 # Create a readable format for the dropdown selections
 readable = [f"{airport_name} ({iata_code})" for airport_name, iata_code in
@@ -114,4 +114,5 @@ elif departing_airport_readable and arriving_airport_readable:
         st.subheader("Displaying the cheapest path using A* algorithm in a simplified graph")
         st.graphviz_chart(graph_simple)
 else:
+    st.subheader("Choose Source and Destination Airports")
     st.map(all_airports_df)
