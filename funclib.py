@@ -149,3 +149,14 @@ def get_valid_heading(departing_iata: str, arriving_iata: str, in_circle_df: pd.
                 graph.edge(outer,inner, label = str(round(price,2)))
                 list_of_valid_edges.append((outer, inner, round(price, 2)))
     return list_of_valid_edges, graph
+
+def getHTMLdocument(url):
+    """
+    from https://www.geeksforgeeks.org/beautifulsoup-scraping-link-from-html/
+    :param url:
+    :return:
+    """
+    # request for HTML document of given url
+    response = requests.get(url)
+    # response will be provided in JSON format
+    return response.text

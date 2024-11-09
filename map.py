@@ -1,9 +1,12 @@
 import pandas as pd
 import streamlit as st
 from variables import *
-from funclib import *
+from funclib import find_distance_and_midpoint, is_in_circle, get_valid_heading, read_airports_csv, generate_price
 import networkx as nx
 import matplotlib.pyplot as plt
+
+
+
 
 # Function to read the CSV file and convert it to a pandas DataFrame
 
@@ -16,8 +19,10 @@ all_airports_df = read_airports_csv(file_path)
 readable = [f"{airport_name} ({iata_code})" for airport_name, iata_code in
             zip(all_airports_df['Name'], all_airports_df['IATA'])]
 # User input for selecting departing and arriving airports
-departing_airport_readable = st.selectbox("Departing City", readable, index=None)
-arriving_airport_readable = st.selectbox("Arriving City", readable, index=None)
+
+departing_airport_readable = st.selectbox("Departing City", readable, index=None, key = 1)
+arriving_airport_readable = st.selectbox("Arriving City", readable, index=None, key = 2)
+
 # User input for selecting the departure date
 user_date = st.date_input("When do you wish to leave?", value="default_value_today")
 # Check if the departing and arriving airports are the same
@@ -78,7 +83,6 @@ elif departing_airport_readable and arriving_airport_readable:
     else:
     #Below is from chatGPT, I was trying to visualize the graph in different way.
         G = nx.DiGraph()
-
         # Add edges with weights
         for departing_city, arriving_city, price in edges:
             G.add_edge(departing_city, arriving_city, weight=price)
@@ -99,5 +103,3 @@ elif departing_airport_readable and arriving_airport_readable:
         st.image('graph_output.png')
 else:
     st.map(all_airports_df)
-
-# TODO: Implement API, Eliminate the nodes without direct flights
