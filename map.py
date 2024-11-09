@@ -15,13 +15,14 @@ file_path = "processed_airports.csv"
 # Read the CSV and convert it to a pandas DataFrame
 st.title("Path Finder")
 all_airports_df = read_airports_csv(file_path)
-
 # Create a readable format for the dropdown selections
 readable = [f"{airport_name} ({iata_code})" for airport_name, iata_code in
             zip(all_airports_df['Name'], all_airports_df['IATA'])]
 # User input for selecting departing and arriving airports
+
 departing_airport_readable = st.selectbox("Departing City", readable, index=None, key = 1)
 arriving_airport_readable = st.selectbox("Arriving City", readable, index=None, key = 2)
+
 # User input for selecting the departure date
 user_date = st.date_input("When do you wish to leave?", value="default_value_today")
 # Check if the departing and arriving airports are the same
@@ -100,3 +101,5 @@ elif departing_airport_readable and arriving_airport_readable:
         plt.title('City Connections with Prices (Spaced Out)')
         plt.savefig('graph_output.png')
         st.image('graph_output.png')
+else:
+    st.map(all_airports_df)
