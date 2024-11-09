@@ -89,7 +89,7 @@ elif departing_airport_readable and arriving_airport_readable:
         flight_lst.update_flight(f)
 
     st.write(flight_lst)
-    plan = flight_lst.find_route(departing_iata, departing_iata)
+    plan = flight_lst.find_route(departing_iata, arriving_iata)
     st.write(plan)
 
     if edges_df[edges_df.columns[0]].count() <= 400 and edges_df[edges_df.columns[0]].nunique() <= 200:
