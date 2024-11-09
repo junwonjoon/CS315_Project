@@ -56,32 +56,41 @@ class FlightGraph:
         return out
 
     def find_route(self, start: str, end: str) -> Optional[List[str]]:
+        """Determine the best set of flights between two airports"""
+        # Make sure both airports are in the graph
         if (start in self.airports) and (end in self.airports):
+            # Queue of airports to visit
             airports_to_visit = [(0, start)]
+            # Ideal originating airport for each airport
+            via_table: Dict[str, str] = {a: "" for a in self.airports}
 
-            via_list: Dict[str, str] = {a: "" for a in self.airports}
-
-            cumulative_weights: Dict[str, float] = {
+            # The cumulative price for flights to get to an airport
+            total_price: Dict[str, float] = {
                 a: float("inf") for a in self.airports
             }
-            cumulative_weights[start] = 0
+            total_price[start] = 0
 
-            cumulative_weights_and_distances: Dict[str, float] = {
+            # Cumulative price + the A* heuristic - in this case, distance
+            total_price_plus_distances: Dict[str, float] = {
                 a: float("inf") for a in self.airports
             }
-            cumulative_weights_and_distances[start] = 0
+            total_price_plus_distances[start] = airport_distance(start, end)
 
+            # While we have airports to visit
             while airports_to_visit:
+                # Get current airport
                 _, current = heapq.heappop(airports_to_visit)
 
                 row = self.airports.index(current)
 
                 if current == end:
+                    # If we've reached the destination, reconstruct set of
+                    # flights needed to get to the destination from the source
                     flight_plan = []
 
                     while current is not start:
                         # Build list of flights to get to the destination
-                        origin = via_list[current]
+                        origin = via_table[current]
                         row = self.airports.index(origin)
                         col = self.airports.index(current)
                         flight_plan.insert(
@@ -96,6 +105,7 @@ class FlightGraph:
 
                     return flight_plan
 
+                # Get all destinations for flights from this airport
                 dest_and_weights: List[Tuple[int, float]] = [
                     (self.airports[i], data)
                     for i, data in enumerate(self.flight_matrix[row])
@@ -103,22 +113,25 @@ class FlightGraph:
                 ]
 
                 for dest, weight in dest_and_weights:
-                    new_cumulative_weight = (
-                        (cumulative_weights[current]) + weight
-                    )
-                    if new_cumulative_weight < cumulative_weights[dest]:
-                        via_list[dest] = current
-                        cumulative_weights[dest] = new_cumulative_weight
-                        cumulative_weights_and_distances[dest] = (
-                            new_cumulative_weight
-                            + airport_distance(current, dest)
+                    new_total_price = (total_price[current]) + weight
+                    if new_total_price < total_price[dest]:
+                        # If the new total price is cheaper than what's
+                        # recorded update the route for this airport to use
+                        # the originating airport
+                        via_table[dest] = current
+                        total_price[dest] = new_total_price
+                        total_price_plus_distances[dest] = (
+                            new_total_price + airport_distance(current, dest)
                         )
+
+                        # If we don't currently plan to visit this airport, add
+                        # it to the list
                         if not any(
                             [d == dest for (_, d) in airports_to_visit]
                         ):
                             heapq.heappush(
                                 airports_to_visit,
-                                (cumulative_weights_and_distances[dest], dest),
+                                (total_price_plus_distances[dest], dest),
                             )
 
         return None
