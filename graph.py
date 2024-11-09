@@ -11,9 +11,19 @@ class Flight:
     source: str
     dest: str
     price: float
+
     def __str__(self) -> str:
         """Get string representation of a flight"""
         return f"Origin: {self.source}; Destination: {self.dest}"
+
+    def get_source(self) -> str:
+        return self.source
+
+    def get_dest(self) -> str:
+        return self.dest
+
+    def get_price(self) -> float:
+        return self.price
 
 
 class FlightGraph:
@@ -49,7 +59,6 @@ class FlightGraph:
                     out += (
                         f"Origin: {airport}; Destination: {self.airports[j]}\n"
                     )
-
         return out
 
     def find_route(self, start: str, end: str) -> list[Flight] | None:

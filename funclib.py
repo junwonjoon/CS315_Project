@@ -1,7 +1,6 @@
 from typing import Any, Tuple, List
 import random
 import pandas as pd
-import streamlit as st
 from bs4 import BeautifulSoup
 import requests
 import graphviz
@@ -95,11 +94,11 @@ def generate_price(distance: float) -> float:
     Returns:
         float: The generated price, calculated as a random multiplier of the distance.
     """
-    #TODO: Find and Implement API
+    # TODO: Find and Implement API
     return distance * random.uniform(12, 18)
 
 
-def get_valid_heading(departing_iata: str, arriving_iata: str, in_circle_df: pd.DataFrame)-> tuple[
+def get_valid_heading(departing_iata: str, arriving_iata: str, in_circle_df: pd.DataFrame) -> tuple[
     list[tuple[Any, Any, float]], Digraph]:
     """
     Generates a list of valid route edges between airports and creates a graph visualization.
@@ -146,9 +145,10 @@ def get_valid_heading(departing_iata: str, arriving_iata: str, in_circle_df: pd.
             distance, heading = result[0], result[3]
             if heading != opposite_heading and outer != inner and inner != departing_iata:
                 price = generate_price(distance)
-                graph.edge(outer,inner, label = str(round(price,2)))
+                graph.edge(outer, inner, label=str(round(price, 2)))
                 list_of_valid_edges.append((outer, inner, round(price, 2)))
     return list_of_valid_edges, graph
+
 
 def getHTMLdocument(url):
     """

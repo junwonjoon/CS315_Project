@@ -1,7 +1,5 @@
 from typing import Tuple
-
 from geopy.distance import distance
-
 from funclib import read_airports_csv
 
 df = read_airports_csv("processed_airports.csv")

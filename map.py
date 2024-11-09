@@ -1,13 +1,11 @@
 import pandas as pd
 import streamlit as st
 from variables import *
-from funclib import find_distance_and_midpoint, is_in_circle, get_valid_heading, read_airports_csv, generate_price
+from funclib import find_distance_and_midpoint, is_in_circle, get_valid_heading, read_airports_csv
 import networkx as nx
 import matplotlib.pyplot as plt
 from graph import *
-
-
-
+import graphviz
 
 # Function to read the CSV file and convert it to a pandas DataFrame
 
@@ -21,11 +19,10 @@ readable = [f"{airport_name} ({iata_code})" for airport_name, iata_code in
             zip(all_airports_df['Name'], all_airports_df['IATA'])]
 # User input for selecting departing and arriving airports
 
-departing_airport_readable = st.selectbox("Departing City", readable, index=None, key = 1)
-arriving_airport_readable = st.selectbox("Arriving City", readable, index=None, key = 2)
+departing_airport_readable = st.selectbox("Departing City", readable, index=None, key=1)
+arriving_airport_readable = st.selectbox("Arriving City", readable, index=None, key=2)
 
 # User input for selecting the departure date
-user_date = st.date_input("When do you wish to leave?", value="default_value_today")
 # Check if the departing and arriving airports are the same
 if departing_airport_readable and departing_airport_readable == arriving_airport_readable:
     st.subheader("Departing city and destination city must be different")
@@ -74,11 +71,11 @@ elif departing_airport_readable and arriving_airport_readable:
     edges = edges_raw[0]
     graph = edges_raw[1]
     edges_df = pd.DataFrame(edges)
-    st.subheader("Showing a table of all of possibilities")
+    st.subheader("Showing a table of all possible paths")
     st.write(edges_df)
-    list_of_flights = [Flight(x[0],x[1],x[2]) for x in edges]
+    # Applying A* Algorithm
+    list_of_flights = [Flight(x[0], x[1], x[2]) for x in edges]
     airport_set = set()
-
     for f in list_of_flights:
         airport_set.add(f.source)
         airport_set.add(f.dest)
@@ -87,36 +84,34 @@ elif departing_airport_readable and arriving_airport_readable:
     flight_lst = FlightGraph(set(airports))
     for f in list_of_flights:
         flight_lst.update_flight(f)
-
-    st.write(flight_lst)
-    plan = flight_lst.find_route(departing_iata, arriving_iata)
-    st.write(plan)
-
+    shortest_path = flight_lst.find_route(departing_iata, arriving_iata)
+    graph_simple = graphviz.Digraph()
+    graph_complex = graph.copy()
+    valid_vertex = [elem.get_source() for elem in shortest_path]
+    valid_edge_pattern = [f"{elem.get_source()} -> {elem.get_dest()}" for elem in shortest_path]
+    # This colors the existing nodes, if there is a match
+    counter = -1
+    for nodes in graph_complex.body:
+        counter += 1
+        if f"{nodes.split()[0]} -> {nodes.split()[2]}" in valid_edge_pattern:
+            label = nodes[:-2]
+            graph_complex.body[counter] = (label + ' color="#FFA500" penwidth=4]')
+    for elem in shortest_path:
+        departure_location = elem.get_source()
+        arriving_location = elem.get_dest()
+        price = elem.get_price()
+        edge_pattern = f"{departure_location} -> {arriving_location}"
+        graph_simple.edge(departure_location, arriving_location, label=str(round(price, 2)), color="#FFA500",
+                          penwidth="2")
     if edges_df[edges_df.columns[0]].count() <= 400 and edges_df[edges_df.columns[0]].nunique() <= 200:
         # Get valid edges and graph representation for the possible paths max 200 Nodes; max 400 edges.
-        # Sometimes it doesn't get displayed
-        st.subheader("Displaying a graph of all of possibilities")
+        # Sometimes it doesn't get displayed so there is else clause
+        st.subheader("Displaying a graph of all possible paths")
         st.graphviz_chart(graph)
+        st.subheader("Displaying the shortest path using A* algorithm")
+        st.graphviz_chart(graph_complex)
     else:
-    #Below is from chatGPT, I was trying to visualize the graph in different way.
-        G = nx.DiGraph()
-        # Add edges with weights
-        for departing_city, arriving_city, price in edges:
-            G.add_edge(departing_city, arriving_city, weight=price)
-
-        # Get edge weights for display
-        edge_labels = {(u, v): f'${d["weight"]}' for u, v, d in G.edges(data=True)}
-
-        # Adjust layout to space nodes
-        pos = nx.spring_layout(G, k=5, seed=42)  # Increase `k` to spread nodes out
-
-        plt.figure(figsize=(24, 20))
-        nx.draw(G, pos, with_labels=True, node_size=2000, node_color='orange', font_size=10, font_weight='bold',
-                edge_color='black', arrowsize=20)
-        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_color='black')
-
-        plt.title('City Connections with Prices (Spaced Out)')
-        plt.savefig('graph_output.png')
-        st.image('graph_output.png')
+        st.subheader("Displaying the shortest path using A* algorithm in a simplified graph")
+        st.graphviz_chart(graph_simple)
 else:
     st.map(all_airports_df)
