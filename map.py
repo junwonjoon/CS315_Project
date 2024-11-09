@@ -108,10 +108,10 @@ elif departing_airport_readable and arriving_airport_readable:
         # Sometimes it doesn't get displayed so there is else clause
         st.subheader("Displaying a graph of all possible paths")
         st.graphviz_chart(graph)
-        st.subheader("Displaying the shortest path using A* algorithm")
+        st.subheader("Displaying the cheapest path using A* algorithm")
         st.graphviz_chart(graph_complex)
     else:
-        st.subheader("Displaying the shortest path using A* algorithm in a simplified graph")
+        st.subheader("Displaying the cheapest path using A* algorithm in a simplified graph")
         st.graphviz_chart(graph_simple)
 else:
     st.map(all_airports_df)
