@@ -11,7 +11,6 @@ def airport_location(iata_code: str) -> Tuple[float, float]:
     """Determine the location of an airport from its IATA code"""
     entry = df.loc[df["IATA"] == iata_code]
     lon, lat = entry.iloc[0]["LONGITUDE"], entry.iloc[0]["LATITUDE"]
-
     return (lat, lon)
 
 

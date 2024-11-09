@@ -4,6 +4,7 @@ from variables import *
 from funclib import find_distance_and_midpoint, is_in_circle, get_valid_heading, read_airports_csv, generate_price
 import networkx as nx
 import matplotlib.pyplot as plt
+from graph import *
 
 
 
@@ -75,6 +76,22 @@ elif departing_airport_readable and arriving_airport_readable:
     edges_df = pd.DataFrame(edges)
     st.subheader("Showing a table of all of possibilities")
     st.write(edges_df)
+    list_of_flights = [Flight(x[0],x[1],x[2]) for x in edges]
+    airport_set = set()
+
+    for f in list_of_flights:
+        airport_set.add(f.source)
+        airport_set.add(f.dest)
+    airports = list(airport_set)
+    airports.sort()
+    flight_lst = FlightGraph(set(airports))
+    for f in list_of_flights:
+        flight_lst.update_flight(f)
+
+    st.write(flight_lst)
+    plan = flight_lst.find_route(departing_iata, departing_iata)
+    st.write(plan)
+
     if edges_df[edges_df.columns[0]].count() <= 400 and edges_df[edges_df.columns[0]].nunique() <= 200:
         # Get valid edges and graph representation for the possible paths max 200 Nodes; max 400 edges.
         # Sometimes it doesn't get displayed
