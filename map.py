@@ -117,4 +117,4 @@ elif departing_airport_readable and arriving_airport_readable:
         st.graphviz_chart(graph_simple)
 else:
     st.subheader("Displaying All Possible Airport Selections")
-    st.map(all_airports_df, color = "#FFA500")
+    st.map(all_airports_df, color = "#737CA1")
