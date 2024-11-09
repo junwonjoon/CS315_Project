@@ -95,7 +95,7 @@ def generate_price(distance: float) -> float:
         float: The generated price, calculated as a random multiplier of the distance.
     """
     # TODO: Find and Implement API
-    return distance * random.uniform(12, 18)
+    return 35 + distance * random.uniform(11.8, 17.8)
 
 
 def get_valid_heading(departing_iata: str, arriving_iata: str, in_circle_df: pd.DataFrame) -> tuple[
