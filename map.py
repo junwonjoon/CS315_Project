@@ -63,10 +63,10 @@ elif departing_airport_readable and arriving_airport_readable:
     # Display filtered airport data and the maps
     st.write(
         f"Have located all of popular airports in between {departing_airport_readable} and {arriving_airport_readable}",
-        popular_100_airport_filtered_df.drop(columns=['color', 'in_circle']), f"Displaying a map view")
+        popular_100_airport_filtered_df.drop(columns=['color', 'in_circle']), f"Displaying a map view of all of the popular airports in between")
     st.map(popular_100_airport_filtered_df, color="color")
     st.write(
-        f"The flight from {departing_airport_readable} to {arriving_airport_readable} is heading {results[3]} bound.")
+        f"The flight from {departing_airport_readable} to {arriving_airport_readable} is heading {results[3].upper()} bound.")
     edges_raw = get_valid_heading(departing_iata, arriving_iata, popular_100_airport_filtered_df)
     edges = edges_raw[0]
     graph = edges_raw[1]
@@ -114,5 +114,5 @@ elif departing_airport_readable and arriving_airport_readable:
         st.subheader("Displaying the cheapest path using A* algorithm in a simplified graph")
         st.graphviz_chart(graph_simple)
 else:
-    st.subheader("Choose Source and Destination Airports")
+    st.subheader("Displaying All Possible Airport Selctions")
     st.map(all_airports_df)
