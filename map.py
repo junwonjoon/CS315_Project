@@ -136,7 +136,7 @@ elif departing_airport_readable and arriving_airport_readable:
     )
 
     flight_deck.picking_radius = 10
-    st.subheader("Visualizing the connections on the map.")
+    st.subheader("Visualizing the connections on the map")
     st.pydeck_chart(flight_deck)
     if edges_df[edges_df.columns[0]].count() <= 400 and edges_df[edges_df.columns[0]].nunique() <= 200:
         # Get valid edges and graph representation for the possible paths max 200 Nodes; max 400 edges.
