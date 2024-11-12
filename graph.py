@@ -8,6 +8,7 @@ from airport_locations import airport_distance
 @dataclass
 class Flight:
     """A flight from one airport to another"""
+
     source: str
     dest: str
     price: float
@@ -28,6 +29,7 @@ class Flight:
 
 class FlightGraph:
     """Graph containing flights between airports"""
+
     airports: List[str]
     flight_matrix: List[List[Optional[float]]]
 
@@ -62,7 +64,12 @@ class FlightGraph:
         return out
 
     def find_route(self, start: str, end: str) -> list[Flight] | None:
-        """Determine the best set of flights between two airports"""
+        """
+        Determine the best set of flights between two airports
+
+        Based mainly on the Wikipedia A* pseudocode
+        (see https://en.wikipedia.org/wiki/A*_search_algorithm#Pseudocode)
+        """
         # Make sure both airports are in the graph
         if (start in self.airports) and (end in self.airports):
             # Queue of airports to visit
@@ -126,13 +133,13 @@ class FlightGraph:
                         via_table[dest] = current
                         total_price[dest] = new_total_price
                         total_price_plus_distances[dest] = (
-                                new_total_price + airport_distance(current, dest)
+                            new_total_price + airport_distance(current, dest)
                         )
 
                         # If we don't currently plan to visit this airport, add
                         # it to the list
                         if not any(
-                                [d == dest for (_, d) in airports_to_visit]
+                            [d == dest for (_, d) in airports_to_visit]
                         ):
                             heapq.heappush(
                                 airports_to_visit,
