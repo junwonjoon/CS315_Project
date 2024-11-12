@@ -145,6 +145,8 @@ elif departing_airport_readable and arriving_airport_readable:
         st.graphviz_chart(graph)
         st.subheader("Displaying the cheapest path using A* algorithm")
         st.graphviz_chart(graph_complex)
+        st.subheader("Displaying the simple version")
+        st.graphviz_chart(graph_simple)
     else:
         st.subheader(
             "Unable to display more than 400 edges in a graph! Displaying the cheapest path using A* algorithm in a simplified graph")
