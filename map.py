@@ -115,7 +115,7 @@ elif departing_airport_readable and arriving_airport_readable:
         edge_pattern = f"{departure_location} -> {arriving_location}"
         graph_simple.edge(departure_location, arriving_location, label=str(round(price, 2)), color="#FFA500",
                           penwidth="2")
-
+    #https://www.geeksforgeeks.org/exploring-geospatial-data-with-pydeck-advanced-visualizations/
     flight_layer = pdk.Layer(
         "GreatCircleLayer",
         edges_df,
@@ -132,7 +132,7 @@ elif departing_airport_readable and arriving_airport_readable:
     flight_deck = pdk.Deck(
         layers=[flight_layer],
         initial_view_state=initial_view_state,
-        tooltip={"text": "{departure_name} to {arrival_name} : {Price}"},
+        tooltip={"text": "{departure_name} to {arrival_name} : ${Price}"},
     )
 
     flight_deck.picking_radius = 10
