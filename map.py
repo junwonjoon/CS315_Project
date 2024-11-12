@@ -5,6 +5,7 @@ from funclib import find_distance_and_midpoint, is_in_circle, get_valid_heading,
 import networkx as nx
 import matplotlib.pyplot as plt
 from graph import *
+import pydeck as pdk
 import graphviz
 
 # Function to read the CSV file and convert it to a pandas DataFrame
@@ -63,7 +64,8 @@ elif departing_airport_readable and arriving_airport_readable:
     # Display filtered airport data and the maps
     st.write(
         f"Have located all of popular airports in between {departing_airport_readable} and {arriving_airport_readable}",
-        popular_100_airport_filtered_df.drop(columns=['color', 'in_circle']), f"Displaying a map view of all of the popular airports in between {departing_airport_readable} and {arriving_airport_readable}",)
+        popular_100_airport_filtered_df.drop(columns=['color', 'in_circle']),
+        f"Displaying a map view of all of the popular airports in between {departing_airport_readable} and {arriving_airport_readable}", )
     st.map(popular_100_airport_filtered_df, color="color")
     st.write(
         f"The flight from {departing_airport_readable} to {arriving_airport_readable} is heading {results[3].upper()} bound.")
@@ -72,9 +74,17 @@ elif departing_airport_readable and arriving_airport_readable:
     edges_raw = get_valid_heading(departing_iata, arriving_iata, popular_100_airport_filtered_df)
     edges = edges_raw[0]
     graph = edges_raw[1]
-    edges_df = pd.DataFrame(edges)
+    edges_df = pd.DataFrame(edges, columns=['Departure', 'Arrival', 'Price'])
     st.subheader("Showing a table of all possible paths")
     st.write(edges_df)
+    edges_df = edges_df.merge(popular_100_airport_filtered_df, left_on='Departure', right_on='IATA')
+    edges_df = edges_df.rename(
+        columns={'LONGITUDE': 'departure_lon', 'LATITUDE': 'departure_lat', 'Name': 'departure_name'})
+    edges_df = edges_df.drop(columns=['Country', 'in_circle', 'color', 'IATA', 'City'])
+    edges_df = edges_df.merge(popular_100_airport_filtered_df, left_on='Arrival', right_on='IATA')
+    edges_df = edges_df.rename(
+        columns={'LONGITUDE': 'arrival_lon', 'LATITUDE': 'arrival_lat', 'Name': 'arrival_name'})
+    edges_df = edges_df.drop(columns=['Country', 'in_circle', 'color', 'IATA', 'City'])
     # Applying A* Algorithm
     list_of_flights = [Flight(x[0], x[1], x[2]) for x in edges]
     airport_set = set()
@@ -105,6 +115,29 @@ elif departing_airport_readable and arriving_airport_readable:
         edge_pattern = f"{departure_location} -> {arriving_location}"
         graph_simple.edge(departure_location, arriving_location, label=str(round(price, 2)), color="#FFA500",
                           penwidth="2")
+
+    flight_layer = pdk.Layer(
+        "GreatCircleLayer",
+        edges_df,
+        pickable=True,
+        get_stroke_width=12,
+        get_source_position = ["departure_lon", "departure_lat"],  # Starting point of the arc
+        get_target_position = ["arrival_lon", "arrival_lat"],
+        get_source_color=[64, 255, 0],
+        get_target_color=[0, 128, 200],
+        auto_highlight=True,
+    )
+    initial_view_state = pdk.ViewState(latitude=50, longitude=-40, zoom=0, bearing=0, pitch=0)
+
+    flight_deck = pdk.Deck(
+        layers=[flight_layer],
+        initial_view_state=initial_view_state,
+        tooltip={"text": "{departure_name} to {arrival_name} : {Price}"},
+    )
+
+    flight_deck.picking_radius = 10
+    st.subheader("Visualizing the connections on the map.")
+    st.pydeck_chart(flight_deck)
     if edges_df[edges_df.columns[0]].count() <= 400 and edges_df[edges_df.columns[0]].nunique() <= 200:
         # Get valid edges and graph representation for the possible paths max 200 Nodes; max 400 edges.
         # Sometimes it doesn't get displayed so there is else clause
@@ -113,8 +146,8 @@ elif departing_airport_readable and arriving_airport_readable:
         st.subheader("Displaying the cheapest path using A* algorithm")
         st.graphviz_chart(graph_complex)
     else:
-        st.subheader("Displaying the cheapest path using A* algorithm in a simplified graph")
+        st.subheader("Unable to display more than 400 edges in a graph! Displaying the cheapest path using A* algorithm in a simplified graph")
         st.graphviz_chart(graph_simple)
 else:
     st.subheader("Displaying All Possible Airport Selections")
-    st.map(all_airports_df, color = "#737CA1")
+    st.map(all_airports_df, color="#737CA1")
