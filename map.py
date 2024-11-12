@@ -68,7 +68,7 @@ elif departing_airport_readable and arriving_airport_readable:
     st.write(
         f"The flight from {departing_airport_readable} to {arriving_airport_readable} is heading {results[3].upper()} bound.")
     st.write(
-        f"Any flight in between that is heading opposite to {results[3].upper()} .")
+        f"Any flight in between that is heading opposite to {results[3].upper()} is filtered out.")
     edges_raw = get_valid_heading(departing_iata, arriving_iata, popular_100_airport_filtered_df)
     edges = edges_raw[0]
     graph = edges_raw[1]
