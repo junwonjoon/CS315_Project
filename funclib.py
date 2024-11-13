@@ -1,7 +1,6 @@
 from typing import Any, Tuple, List
 import random
 import pandas as pd
-from bs4 import BeautifulSoup
 import requests
 import graphviz
 from graphviz import Digraph

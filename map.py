@@ -1,14 +1,10 @@
 import pandas as pd
 import streamlit as st
-from variables import *
 from funclib import find_distance_and_midpoint, is_in_circle, get_valid_heading, read_airports_csv
-import networkx as nx
-import matplotlib.pyplot as plt
-from graph import *
+from graph import Flight, FlightGraph
+from variables import list_of_popular_airports_100
 import pydeck as pdk
 import graphviz
-
-# Function to read the CSV file and convert it to a pandas DataFrame
 
 # Path to the sample CSV file
 file_path = "processed_airports.csv"
@@ -72,10 +68,13 @@ elif departing_airport_readable and arriving_airport_readable:
     st.write(
         f"Any flight in between that is heading opposite to {results[3].upper()} is filtered out.")
     edges_raw = get_valid_heading(departing_iata, arriving_iata, popular_100_airport_filtered_df)
+    # edges is tuple containing (source, destination, price)
     edges = edges_raw[0]
+    # graph is graphviz digraph
     graph = edges_raw[1]
     edges_df = pd.DataFrame(edges, columns=['Departure', 'Arrival', 'Price'])
     st.subheader("Showing a table of all possible paths")
+    # reconstructing edges_df to use pydeck
     st.write(edges_df)
     edges_df = edges_df.merge(popular_100_airport_filtered_df, left_on='Departure', right_on='IATA')
     edges_df = edges_df.rename(
@@ -85,7 +84,7 @@ elif departing_airport_readable and arriving_airport_readable:
     edges_df = edges_df.rename(
         columns={'LONGITUDE': 'arrival_lon', 'LATITUDE': 'arrival_lat', 'Name': 'arrival_name'})
     edges_df = edges_df.drop(columns=['Country', 'in_circle', 'color', 'IATA', 'City'])
-    # Applying A* Algorithm
+    # Applying A* Algorithm, Nikhil can explain this part
     list_of_flights = [Flight(x[0], x[1], x[2]) for x in edges]
     airport_set = set()
     for f in list_of_flights:
@@ -101,7 +100,7 @@ elif departing_airport_readable and arriving_airport_readable:
     graph_complex = graph.copy()
     valid_vertex = [elem.get_source() for elem in shortest_path]
     valid_edge_pattern = [f"{elem.get_source()} -> {elem.get_dest()}" for elem in shortest_path]
-    # This colors the existing nodes, if there is a match
+    # This colors the existing nodes, if there is a match from the A* algorithm
     counter = -1
     for nodes in graph_complex.body:
         counter += 1
@@ -115,7 +114,8 @@ elif departing_airport_readable and arriving_airport_readable:
         edge_pattern = f"{departure_location} -> {arriving_location}"
         graph_simple.edge(departure_location, arriving_location, label=str(round(price, 2)), color="#FFA500",
                           penwidth="2")
-    #https://www.geeksforgeeks.org/exploring-geospatial-data-with-pydeck-advanced-visualizations/
+    # https://www.geeksforgeeks.org/exploring-geospatial-data-with-pydeck-advanced-visualizations/
+    # Using pydeck to display the edges in the map
     flight_layer = pdk.Layer(
         "GreatCircleLayer",
         edges_df,
@@ -130,6 +130,7 @@ elif departing_airport_readable and arriving_airport_readable:
     initial_view_state = pdk.ViewState(latitude=50, longitude=-40, zoom=0, bearing=0, pitch=0)
 
     flight_deck = pdk.Deck(
+        map_style=None,
         layers=[flight_layer],
         initial_view_state=initial_view_state,
         tooltip={"text": "{departure_name} to {arrival_name} : ${Price}"},
